@@ -1,8 +1,13 @@
 import React from 'react';
 import './menu-item.styles.scss';
+import { withRouter } from "react-router-dom";
+//withRouter is a higher order component that is a function that excepts a component as a arg. and
+//returns a modified component, otherwise to get the history prop we will have to pass it from directory to directory-menu and then
+//to the menu-item, this is a bad pattern called porp tunneling ot prop drilling
 
-const MenuItem = ({title, imageUrl, size}) => (
-    <div className={`${size} menu-item`}>
+const MenuItem = ({title, imageUrl, size, history, linkUrl, match}) => (
+    //important folder lec. 65
+    <div className={`${size} menu-item`} onClick={()=> history.push(`${match.url}${linkUrl}`)}>
     <div className='background-image'
     style={{backgroundImage: `url(${imageUrl})`}} 
     />
@@ -17,4 +22,4 @@ const MenuItem = ({title, imageUrl, size}) => (
     </div>    
 )
 
-export default MenuItem;
+export default withRouter(MenuItem);
