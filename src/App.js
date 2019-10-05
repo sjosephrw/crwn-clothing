@@ -1,29 +1,77 @@
 import React from 'react';
 import './App.css';
+import { connect } from 'react-redux';//connect - Higher Order Component, that modifies our component to have access to things related to Redux
 import { Switch, Route } from "react-router-dom";
 import HomePage from './pages/homepage/homepage.component';
 import ShopPage from './pages/shop/shop.component'
 import Header from './components/header/header.component';
 import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
-import { auth } from './firebase/firebase.utils';
+import { auth, createUserProfileDocument } from './firebase/firebase.utils';
+import { setCurrentUser } from './redux/user/user.actions';
 
 class App extends React.Component {
 
-  constructor(){
-    super()
+  // constructor(){
+  //   super()
   
-    this.state = {
-      currentUser: null
-    }
-  }
+  //   this.state = {
+  //     currentUser: null
+  //   }
+  // }
 
   //to log out, decalring a class property not inside constructor
   unsubscribeFromAuth = null;
 
   componentDidMount(){
-    auth.onAuthStateChanged(user => {
-      this.unsubscribeFromAuth = this.setState({ currentUser: user });
-      console.log(user);
+
+    const { setCurrentUser } = this.props; 
+
+    this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
+      //  this.setState({ currentUser: user });
+      
+      if (userAuth){//if logging in 
+        const userRef = await createUserProfileDocument(userAuth);
+
+        //if (userRef){
+          userRef.onSnapshot(snapShot => {
+            console.log(snapShot.data());//important you must add the .data() method to see the newly created user Data
+          
+            //replaced by the redux functions below
+            // this.setState({
+            //   currentUser: {
+            //     id: snapShot.id,
+            //     ...snapShot.data()
+            //   }
+            // }, () => {
+            //   console.log(this.state);//setState is async that is why we assing it as a callback
+            // });
+          //******************** */
+            // this.props.setCurrentUser({
+            //     id: snapShot.id,
+            //     ...snapShot.data()
+              
+            // }, () => {
+            //   console.log(this.state);//setState is async that is why we assing it as a callback
+            // });
+          //********************** */  
+            setCurrentUser({
+              //when ever the user snapshot updates we are settign the userReducer value with the new obj.
+                id: snapShot.id,
+                ...snapShot.data()
+              
+            }, () => {
+              console.log(this.state);//setState is async that is why we assing it as a callback
+            });
+
+          });
+        //}
+
+      } else {//if logged out then userAuth will be null so we are setting currentUser to null
+        // this.setState({ currentUser: userAuth });
+        setCurrentUser( userAuth );
+
+      }  
+      // console.log(userAuth);
     })
   }
 
@@ -36,8 +84,8 @@ class App extends React.Component {
       <div className="App">
 {      //making the header aware that the user has logged out /or in to display sign in or log out links 
 }      
-        <Header currentUser={ this.state.currentUser }/>
-
+        {/* <Header currentUser={ this.state.currentUser }/> */}
+        <Header/>
         {//https://reacttraining.com/react-router/web/guides/quick-start}
         
           /* 
@@ -78,4 +126,14 @@ class App extends React.Component {
   
 }
 
-export default App;
+//***********LEC 101 kind of confusing */
+const mapDispatchToProps = dispatch => ({
+  //setCurrentUser is passed in a  user obj. that calls dispatch() function - dispatch - a way for redux to know that whatever you are passing into me is a action obj. that I am going to pass into every reducer
+  setCurrentUser: user => dispatch(setCurrentUser(user))//setCUrrentUse(user) - is the action obj. so we are dispatching the action obj.
+  //so we dont nedd the app constructor any more.
+});
+
+//***********LEC 101 kind of confusing */
+//connect - a HOC are functions that accept components as args. and return a improved component 
+//but here we pass only the 2nd function into the HOC the first one is null, the 2nd one optional, 
+export default connect(null, mapDispatchToProps)(App);
