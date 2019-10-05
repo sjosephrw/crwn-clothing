@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import { connect } from 'react-redux';//connect - Higher Order Component, that modifies our component to have access to things related to Redux
-import { Switch, Route } from "react-router-dom";
+import { Switch, Route, Redirect } from "react-router-dom";
 import HomePage from './pages/homepage/homepage.component';
 import ShopPage from './pages/shop/shop.component'
 import Header from './components/header/header.component';
@@ -100,7 +100,10 @@ class App extends React.Component {
         <Switch>
           <Route exact path='/' component={HomePage}/>
           <Route path='/shop' component={ShopPage}/>
-          <Route path='/signin' component={SignInAndSignUpPage}/>
+          {/* <Route path='/signin' component={SignInAndSignUpPage}/> */}
+          {/* //redirect to homepage if logged in and trying to access login page */}
+          <Route exact path='/signin' render={() => this.props.currentUser ? (<Redirect to='/'/>) : (<SignInAndSignUpPage/>)}/>
+
         </Switch>
   
         /* <Router>
@@ -125,6 +128,10 @@ class App extends React.Component {
   }
   
 }
+//{ user } - destructuring the userReducer 
+const mapStateToProps = ({ user }) => ({
+  currentUser: user.currentUser
+});
 
 //***********LEC 101 kind of confusing */
 const mapDispatchToProps = dispatch => ({
@@ -136,4 +143,8 @@ const mapDispatchToProps = dispatch => ({
 //***********LEC 101 kind of confusing */
 //connect - a HOC are functions that accept components as args. and return a improved component 
 //but here we pass only the 2nd function into the HOC the first one is null, the 2nd one optional, 
-export default connect(null, mapDispatchToProps)(App);
+// export default connect(null, mapDispatchToProps)(App);
+
+//this time we can pass in the 2nd function because we need to redirect to another page
+//if the user tries to access the login register page after signing in 
+export default connect(mapStateToProps, mapDispatchToProps)(App);
