@@ -1,13 +1,20 @@
 import React from 'react';
 import './App.css';
 import { connect } from 'react-redux';//connect - Higher Order Component, that modifies our component to have access to things related to Redux
+import { createStructuredSelector } from 'reselect';
+import { withRouter } from 'react-router-dom';
+
 import { Switch, Route, Redirect } from "react-router-dom";
 import HomePage from './pages/homepage/homepage.component';
 import ShopPage from './pages/shop/shop.component'
 import Header from './components/header/header.component';
 import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up.component';
+import CheckoutPage from './pages/checkout/checkout.component';
+
+
 import { auth, createUserProfileDocument } from './firebase/firebase.utils';
 import { setCurrentUser } from './redux/user/user.actions';
+import { selectCurrentUser } from './redux/user/user.selectors';
 
 class App extends React.Component {
 
@@ -100,6 +107,7 @@ class App extends React.Component {
         <Switch>
           <Route exact path='/' component={HomePage}/>
           <Route path='/shop' component={ShopPage}/>
+          <Route exact path='/checkout' component={CheckoutPage}/>
           {/* <Route path='/signin' component={SignInAndSignUpPage}/> */}
           {/* //redirect to homepage if logged in and trying to access login page */}
           <Route exact path='/signin' render={() => this.props.currentUser ? (<Redirect to='/'/>) : (<SignInAndSignUpPage/>)}/>
@@ -129,8 +137,13 @@ class App extends React.Component {
   
 }
 //{ user } - destructuring the userReducer 
-const mapStateToProps = ({ user }) => ({
-  currentUser: user.currentUser
+// const mapStateToProps = ({ user }) => ({
+//   currentUser: user.currentUser
+// });
+
+//doing the above differently
+const mapStateToProps = createStructuredSelector({
+  currentUser: selectCurrentUser
 });
 
 //***********LEC 101 kind of confusing */
@@ -147,4 +160,4 @@ const mapDispatchToProps = dispatch => ({
 
 //this time we can pass in the 2nd function because we need to redirect to another page
 //if the user tries to access the login register page after signing in 
-export default connect(mapStateToProps, mapDispatchToProps)(App);
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(App));

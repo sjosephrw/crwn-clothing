@@ -6,6 +6,9 @@ import {  Link  } from "react-router-dom";
 import { auth } from '../../firebase/firebase.utils';
 import CartIcon from '../cart-icon/cart-icon.component';
 import CartDropdown from '../cart-dropdown/cart-dropdown.component';
+import { createStructuredSelector } from 'reselect';
+import { selectCurrentUser } from '../../redux/user/user.selectors';
+import { selectCartHidden } from '../../redux/cart/cart.selectors';
 
 //hence forth we want the current user value to be received from the userReducer
 
@@ -58,11 +61,22 @@ const Header = ({ hidden, currentUser }) => (
 // });
 
 //advanced destructuring - { user: {currentUser }, cart: {hidden}}, get the cart hidden value from the this.state.cart abd currentUser from this.state.user
-const mapStateToProps = ({ user: {currentUser }, cart: {hidden}}) => ({
-    //state.user comes from the rootReducer, .currentUser comes from the userReducer
-    currentUser,
-    hidden
-    //because of this we can do - const Header = ({ hidden, currentUser }) => (
+// const mapStateToProps = ({ user: {currentUser }, cart: {hidden}}) => ({
+//     //state.user comes from the rootReducer, .currentUser comes from the userReducer
+//     currentUser,
+//     hidden
+//     //because of this we can do - const Header = ({ hidden, currentUser }) => (
+// });
+
+//MEMOIZATION - done differently below
+// const mapStateToProps = (state) => ({
+//     currentUser: selectCurrentUser(state),
+//     hidden: selectCartHidden(state)
+// });
+
+const mapStateToProps = createStructuredSelector({
+    currentUser: selectCurrentUser,
+    hidden: selectCartHidden
 });
 
 //***********LEC 100 kind of confusing */

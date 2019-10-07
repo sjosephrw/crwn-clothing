@@ -2,6 +2,7 @@ import React from 'react';
 import { ReactComponent as ShoppingIcon } from '../../assets/shopping-bag.svg';
 import './cart-icon.styles.scss';
 import { connect } from 'react-redux';//connect - Higher Order Component, that modifies our component to have access to things related to Redux
+import { createStructuredSelector } from 'reselect';
 import { toggleCartHidden } from '../../redux/cart/cart.actions';
 import { selectCartItemsCount } from '../../redux/cart/cart.selectors';
 
@@ -26,8 +27,13 @@ const mapDispatchToProps = dispatch => ({
 //     //because of this we can do - const Header = ({ , itemCount}) => ( 
 // });
 
-const mapStateToProps = (state) => ({
-    itemCount: selectCartItemsCount(state)
+// const mapStateToProps = (state) => ({
+//     itemCount: selectCartItemsCount(state)
+//     //because of this we can do - const Header = ({ , itemCount}) => ( 
+// });
+
+const mapStateToProps = createStructuredSelector({
+    itemCount: selectCartItemsCount
     //because of this we can do - const Header = ({ , itemCount}) => ( 
 });
 
