@@ -3,11 +3,12 @@ import { ReactComponent as ShoppingIcon } from '../../assets/shopping-bag.svg';
 import './cart-icon.styles.scss';
 import { connect } from 'react-redux';//connect - Higher Order Component, that modifies our component to have access to things related to Redux
 import { toggleCartHidden } from '../../redux/cart/cart.actions';
+import { selectCartItemsCount } from '../../redux/cart/cart.selectors';
 
-const CartIcon = ({ toggleCartHidden, cartItems }) => (
+const CartIcon = ({ toggleCartHidden, itemCount }) => (
     <div className='cart-icon' onClick={ toggleCartHidden }>
         <ShoppingIcon className='shopping-icon'/>
-        <span className='item-count'>{ cartItems.length }</span>
+        <span className='item-count'>{ itemCount }</span>
     </div>
 )
 
@@ -18,10 +19,16 @@ const mapDispatchToProps = dispatch => ({
     //so now we can use toggleCartHidden here - CartIcon = ({ toggleCartHidden })
 });
 
-const mapStateToProps = ({cart: { cartItems }}) => ({
-    //state.user comes from the rootReducer, .currentUser comes from the userReducer
-    cartItems: cartItems
-    //because of this we can do - const Header = ({ hidden, currentUser }) => ( 
+//**********IMPORTANT if the cart item values dont change and if the output of the selector does not change*/
+//then we dont want to rerender the component becuase it's memory inefficient, so we cache (Memoization) the selectors value. we use 'npm i reselect' for this       
+// const mapStateToProps = ({cart: { cartItems }}) => ({
+//     itemCount: cartItems.reduce((accumalatedQunatity, cartItem) =>  accumalatedQunatity + cartItem.quantity , 0)//0 - initial accumalatedQuantity
+//     //because of this we can do - const Header = ({ , itemCount}) => ( 
+// });
+
+const mapStateToProps = (state) => ({
+    itemCount: selectCartItemsCount(state)
+    //because of this we can do - const Header = ({ , itemCount}) => ( 
 });
 
 // export default connect(null, mapDispatchToProps)(CartIcon);//mapDispatchToProps - so now we can use toggleCartHidden here - CartIcon = ({ toggleCartHidden })

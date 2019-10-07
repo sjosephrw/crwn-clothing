@@ -1,5 +1,6 @@
 import React from 'react';
 import { connect } from 'react-redux';//connect - Higher Order Component, that modifies our component to have access to things related to Redux
+import { selectCartItems } from '../../redux/cart/cart.selectors';
 import CustomButton from '../custom-button/custom-button.component';
 import CartItem from '../cart-item/cart-item.component';
 import './cart-dropdown.styles.scss';
@@ -19,8 +20,13 @@ const CartDropdown = ({cartItems}) => (
 )
 
 //advanced destructuring - { user: {currentUser }, cart: {hidden}}, get the cart hidden value from the this.state.cart abd currentUser from this.state.user
-const mapStateToProps = ({cart: { cartItems }}) => ({
-    cartItems
+// const mapStateToProps = ({cart: { cartItems }}) => ({
+//     cartItems
+//     //because of this we can do - const Header = ({ hidden, currentUser }) => (
+// });
+
+const mapStateToProps = (state) => ({
+    cartItems: selectCartItems(state)
     //because of this we can do - const Header = ({ hidden, currentUser }) => (
 });
 
