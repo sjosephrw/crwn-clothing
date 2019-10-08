@@ -2,11 +2,15 @@
 import { createStore, applyMiddleware } from 'redux';
 import logger from 'redux-logger';
 import rootReducer from './root-reducer';
+import { persistStore } from 'redux-persist';//to store the state in local storage, //other wise when we refresh the browser the cart data disappears
 
 //the MW that the store is expecting from redux is a array, if we need to add more things to the MW then add it to the array below
-//we could have done it without a arrya but we might need to passs in several MW's in the future
+//we could have done it without a array but we might need to passs in several MW's in the future
 const middlewares = [logger];
 
-const store = createStore(rootReducer, applyMiddleware(...middlewares));
+export const store = createStore(rootReducer, applyMiddleware(...middlewares));
 
-export default store;
+export const persistor = persistStore(store);
+
+export default { store, persistStore};//now we are exporting the persistor as well, 
+//********** */so now we have to update our root reducer 
