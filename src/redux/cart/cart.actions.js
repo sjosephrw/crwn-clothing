@@ -11,3 +11,15 @@ export const addItem = (item) => ({
     type: CartActionTypes.ADD_ITEM,
     payload: item//optional but we need it in the userReducer so it was passed in here.
 })
+
+export const removeItem = (item) => ({
+    //these must be in the order defined in the userReducer
+    type: CartActionTypes.REMOVE_ITEM,
+    payload: item//optional but we need it in the userReducer so it was passed in here.
+})
+
+export const clearItemFromCart = (item) => ({
+    //these must be in the order defined in the userReducer
+    type: CartActionTypes.CLEAR_ITEM_FROM_CART,
+    payload: item//optional but we need it in the userReducer so it was passed in here.    
+})

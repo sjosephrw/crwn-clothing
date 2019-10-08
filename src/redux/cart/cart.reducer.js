@@ -1,5 +1,5 @@
 import CartActionTypes from './cart.types';
-import { addItemToCart } from './cart.utils';
+import { addItemToCart, removeItemFromCart } from './cart.utils';
 
 const INITIAL_STATE = {
     hidden: true,//initially hide the cart
@@ -22,7 +22,24 @@ const cartReducer = (state = INITIAL_STATE, action) => {
                 ...state,//return initail state
                 // cartItems: state.cartItems.push(action.payload)
                 cartItems: addItemToCart(state.cartItems, action.payload)//spread in the existing cartItems and append the newItem
-            }            
+            } 
+        //CLEARING items from cart    
+        case CartActionTypes.CLEAR_ITEM_FROM_CART: 
+            return {
+                ...state,//return initail state
+                // cartItems: state.cartItems.push(action.payload)
+                //filter returns a new array without the item to be deleted
+                //filter keeps the values where the function returns true
+                cartItems: state.cartItems.filter(cartItem => cartItem.id !== action.payload.id)//spread in the existing cartItems and remove the newItem
+            }
+        //removing item using the decrementor arrow
+        case CartActionTypes.REMOVE_ITEM: 
+            return {
+                ...state,//return initail state
+                // cartItems: state.cartItems.push(action.payload)
+                //filter returns a new array without the item to be deleted
+                cartItems: removeItemFromCart(state.cartItems, action.payload)//spread in the existing cartItems and remove the newItem
+            }                                             
         default:
             return state;//return initial state
     }
