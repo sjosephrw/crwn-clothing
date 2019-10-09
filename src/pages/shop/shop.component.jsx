@@ -1,10 +1,15 @@
 import React from 'react';
+import { Route } from 'react-router-dom';
+
+import CollectionOverview from '../../components/collections-overview/collections-overview.component';
+import CollectionPage from '../collection/collection.component';
+
 // import './shop.data'
 // import SHOP_DATA from './shop.data';
-import CollectionPreview from '../../components/preview-collection/collection-preview.component';
-import { selectCollections } from '../../redux/shop/shop.selectors';
-import { connect } from 'react-redux';
-import { createStructuredSelector } from 'reselect';
+// import CollectionPreview from '../../components/preview-collection/collection-preview.component';
+// import { selectCollections } from '../../redux/shop/shop.selectors';
+// import { connect } from 'react-redux';
+// import { createStructuredSelector } from 'reselect';
 
 // class ShopPage extends React.Component {
 
@@ -32,20 +37,21 @@ import { createStructuredSelector } from 'reselect';
 
 // }
 
-const ShopPage = ({ collections }) => (
-    <div className='shop-page'>
+const ShopPage = ({ match }) => {
+
+    console.log(match);//match.path = '/shop'
+
+    return (<div className='shop-page'>
         {
-            collections.map(({id, ...otherCollectionProps}) => (
-                <CollectionPreview key={id} {...otherCollectionProps}/>
-            ))
+            //in the App.js page the ShopPage is nested in a Route and that automatically passes
+            //match, history, path to the ShopPage component props, I think we use withRouter when 
+            //a Route component does not pass match, history and path into it 
+            //in App.js - <Route path='/shop' component={ShopPage}/> will always lead us to the ShopPage component
         }
-    </div>
-)
+        <Route exact path={`${match.path}`} component={ CollectionOverview } />
+        <Route path={`${match.path}/:collectionId`} component={ CollectionPage }/>
+    </div>)
+}
 
 
-const mapStateToProps = createStructuredSelector({
-    collections: selectCollections
-    //because of this we can do - const Header = ({ , itemCount}) => ( 
-  });
-
-export default connect(mapStateToProps)(ShopPage);
+export default ShopPage;
