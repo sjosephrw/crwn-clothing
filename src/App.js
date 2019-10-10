@@ -12,9 +12,11 @@ import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up
 import CheckoutPage from './pages/checkout/checkout.component';
 
 
-import { auth, createUserProfileDocument } from './firebase/firebase.utils';
+import { auth, createUserProfileDocument, addCollectionAndDocuments } from './firebase/firebase.utils';
 import { setCurrentUser } from './redux/user/user.actions';
 import { selectCurrentUser } from './redux/user/user.selectors';
+
+import { selectCollectionsForPreview } from './redux/shop/shop.selectors';
 
 class App extends React.Component {
 
@@ -31,7 +33,7 @@ class App extends React.Component {
 
   componentDidMount(){
 
-    const { setCurrentUser } = this.props; 
+    const { setCurrentUser/*, collectionsArray*/ } = this.props; 
 
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
       //  this.setState({ currentUser: user });
@@ -76,10 +78,16 @@ class App extends React.Component {
       } else {//if logged out then userAuth will be null so we are setting currentUser to null
         // this.setState({ currentUser: userAuth });
         setCurrentUser( userAuth );
-
+        
+        //if you look at the SHOP_DATA it holds routeName, and id that we dont want in firebase
+        //we only need the title and items that we must desctructure by looping over the data
+        //*********IT DID NOT WORK 100% THE FIRST RECORD'S UNWANTED DATA ENDED UP IN FIREBASE */
+        // addCollectionAndDocuments('collections', collectionsArray.map(({ title, items }) => ({ title, items })));
       }  
       // console.log(userAuth);
     })
+
+
   }
 
   componentWillUnmount(){
@@ -143,7 +151,8 @@ class App extends React.Component {
 
 //doing the above differently
 const mapStateToProps = createStructuredSelector({
-  currentUser: selectCurrentUser
+  currentUser: selectCurrentUser//,
+  // collectionsArray: selectCollectionsForPreview
 });
 
 //***********LEC 101 kind of confusing */

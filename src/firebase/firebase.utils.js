@@ -74,6 +74,67 @@ export const createUserProfileDocument = async (userAuth, additionalData) => {
   return userRef;
 };
 
+//objects to add will be a array
+export const addCollectionAndDocuments = async (collectionKey, objectsToAdd) => {
+  const collectionRef = firestore.collection(collectionKey);
+  console.log(collectionRef);
+
+  //we can not add an entire array into firebase we have to do it bit by bit
+  //with the batch method if at least one record fails to write to the db we want the entire thing to fail
+  const batch = firestore.batch();
+  
+  objectsToAdd.forEach(obj => {
+    
+    const newDocRef = collectionRef.doc();
+    console.log(newDocRef);
+    //newDocRef.set(prop, val)//can not be used because we are adding many records must use batch.set
+    batch.set(newDocRef, obj);//newDocRef - prop, obj - value
+  });
+  return await batch.commit();//fires the request, and returns a promise
+}
+
+// export const convertCollectionsSnapshotToMap = (collections) => {
+// //now though the routing and ids were removed from the db data we need to get them back into our App
+// //so
+//   //collections.doc holds the shop collections data
+//   const transformedCollection = collections.doc.map(doc => {
+//     const { title, items } = doc.data();//when we analized the firebase returned data we saw this
+
+//     return {
+//       //create the routename with the title
+//       routeName: encodeURI(title.toLowerCase()),
+//       id: doc.id,//the id was in doc.id and not in doc.data()
+//       title,
+//       items
+//     }
+//   });
+  
+//   console.log(transformedCollection);
+
+// }
+
+//refer to the commented out code above for explanations
+export const convertCollectionsSnapshotToMap = collections => {
+  const transformedCollection = collections.docs.map(doc => {
+    const { title, items } = doc.data();
+
+    return {
+      routeName: encodeURI(title.toLowerCase()),
+      id: doc.id,
+      title,
+      items
+    };
+  });
+
+  //console.log(transformedCollection);//this is a array of objs. that we have to convert to a obj. of objs.
+
+  return transformedCollection.reduce((accumulator, collection) => {
+    //hats = hats collection onfirst iteration, on 2nd jackets = jackets collection
+    accumulator[collection.title.toLowerCase()] = collection;
+    return accumulator;
+  }, {}//the obj. of objs. will be stored into this empty obj. 
+  );
+};
 
 export const auth = firebase.auth();
 

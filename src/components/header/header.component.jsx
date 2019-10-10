@@ -9,32 +9,32 @@ import CartDropdown from '../cart-dropdown/cart-dropdown.component';
 import { createStructuredSelector } from 'reselect';
 import { selectCurrentUser } from '../../redux/user/user.selectors';
 import { selectCartHidden } from '../../redux/cart/cart.selectors';
-
+import { HeaderContainer, LogoContainer, OptionsContainer, OptionLink, OptionDiv } from './header.styles';
 //hence forth we want the current user value to be received from the userReducer
 
 const Header = ({ hidden, currentUser }) => (
-    <div className='header'>
-        <Link className='logo-container' to='/'>
+    <HeaderContainer>
+        <LogoContainer to='/'>
             <Logo className='logo'></Logo>
-        </Link>
-        <div className='options'>
-            <Link to='/shop'>
+        </LogoContainer>
+        <OptionsContainer>
+            <OptionLink to='/shop'>
                 SHOP
-            </Link>
+            </OptionLink>
             &nbsp;&nbsp;&nbsp;&nbsp;
-            <Link to='/shop'>
+            <OptionLink to='/shop'>
                 CONTACT
-            </Link>
+            </OptionLink>
             &nbsp;&nbsp;&nbsp;&nbsp;
             {
                 currentUser ?
-                <div className='option' onClick={() => auth.signOut()}>
+                <OptionLink as='div' onClick={() => auth.signOut()}>
                     SIGN OUT
-                </div>
+                </OptionLink>
                 :
-                <Link to='/signin'>
+                <OptionLink to='/signin'>
                     SIGN IN 
-                </Link>                
+                </OptionLink>                
             }
             &nbsp;&nbsp;&nbsp;&nbsp;
             <CartIcon/>
@@ -42,14 +42,14 @@ const Header = ({ hidden, currentUser }) => (
             {/* <Link to='/shop'>
                 SIGN IN
             </Link>                         */}
-        </div>
+        </OptionsContainer>
         {//show or hide the cart dropdown if hidden is false or true
             hidden ? 
             null        
             :
             <CartDropdown></CartDropdown>
         }    
-    </div>
+    </HeaderContainer>
 )
 
 //***********LEC 100 kind of confusing */
