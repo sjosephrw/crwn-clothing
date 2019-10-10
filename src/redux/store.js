@@ -6,7 +6,13 @@ import { persistStore } from 'redux-persist';//to store the state in local stora
 
 //the MW that the store is expecting from redux is a array, if we need to add more things to the MW then add it to the array below
 //we could have done it without a array but we might need to passs in several MW's in the future
-const middlewares = [logger];
+
+// const middlewares = [logger];
+const middlewares = [];
+
+if (process.env.NODE_ENV === 'development'){
+    middlewares.push(logger);//only log the state stored in redux when in development
+}
 
 export const store = createStore(rootReducer, applyMiddleware(...middlewares));
 
