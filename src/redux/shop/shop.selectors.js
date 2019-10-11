@@ -41,5 +41,14 @@ export const selectCollection = collectionUrlParam =>
 
         // collections.find(collection => collection.id === COLLECTION_ID_MAP[collectionUrlParam])//due to data normalization lec. 132 this is not necessary
 
-//because the data coming in from firebase is asynchronous we might get errors to prevent this
-//we create a loading state that displays a loading icon until we receive the data.
+
+
+export const selectIsCollectionFetching = createSelector(
+    [selectShop],
+    shop => shop.isFetching
+);
+
+export const selectIsCollectionsLoaded = createSelector(
+    [selectShop],
+    shop => !!shop.collections//!! converting shop.collections value to a boolean value true or false
+);
