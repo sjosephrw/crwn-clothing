@@ -25,13 +25,21 @@ export const selectCollectionsForPreview = createSelector(
     [selectCollections],
     //const obj = {a: 1, b: 2}
     //Obj.keys(obj)//output- [a, b]
-    (collections) => Object.keys(collections).map(key => collections[key])
+    //collections[key] - gives the value
+    //const INITIAL_STATE = { collections: null } because we set this to null we have to check for collections is null below
+    //if it is null let the collections be equal to a empty array
+    (collections) => collections ? Object.keys(collections).map(key => collections[key]) : []
 );
 
 export const selectCollection = collectionUrlParam => 
     createSelector(
         [selectCollections],
-        (collection) => collection[collectionUrlParam]
+        //const INITIAL_STATE = { collections: null } because we set this to null we have to check for collections is null below
+        //if it is null let the collections be equal to null
+        (collection) => (collection ? collection[collectionUrlParam] : null)
   );
 
         // collections.find(collection => collection.id === COLLECTION_ID_MAP[collectionUrlParam])//due to data normalization lec. 132 this is not necessary
+
+//because the data coming in from firebase is asynchronous we might get errors to prevent this
+//we create a loading state that displays a loading icon until we receive the data.

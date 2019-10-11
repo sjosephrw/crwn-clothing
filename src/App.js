@@ -34,7 +34,8 @@ class App extends React.Component {
   componentDidMount(){
 
     const { setCurrentUser/*, collectionsArray*/ } = this.props; 
-
+    //onAuthStateChanged is a event listener that we do not need when the component unmounts thats why we have to unsubscribe from it below
+    //in the componentWillUnmount
     this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
       //  this.setState({ currentUser: user });
       
