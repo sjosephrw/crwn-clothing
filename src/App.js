@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import './App.css';
 import { connect } from 'react-redux';//connect - Higher Order Component, that modifies our component to have access to things related to Redux
 import { createStructuredSelector } from 'reselect';
@@ -16,141 +16,165 @@ import CheckoutPage from './pages/checkout/checkout.component';
 import { checkUserSession } from './redux/user/user.actions';
 import { selectCurrentUser } from './redux/user/user.selectors';
 
-import { selectCollectionsForPreview } from './redux/shop/shop.selectors';
+// import { selectCollectionsForPreview } from './redux/shop/shop.selectors';
 
-class App extends React.Component {
+// class App extends React.Component {
 
-  // constructor(){
-  //   super()
+//   // constructor(){
+//   //   super()
   
-  //   this.state = {
-  //     currentUser: null
-  //   }
-  // }
+//   //   this.state = {
+//   //     currentUser: null
+//   //   }
+//   // }
 
-  //to log out, decalring a class property not inside constructor
-  unsubscribeFromAuth = null;
+//   //to log out, decalring a class property not inside constructor
+//   unsubscribeFromAuth = null;
 
-  componentDidMount(){
+//   componentDidMount(){
 
-    // const { setCurrentUser/*, collectionsArray*/ } = this.props; 
-    //onAuthStateChanged is a event listener that we do not need when the component unmounts thats why we have to unsubscribe from it below
-    //in the componentWillUnmount
-    // this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
-    //   //  this.setState({ currentUser: user });
+//     // const { setCurrentUser/*, collectionsArray*/ } = this.props; 
+//     //onAuthStateChanged is a event listener that we do not need when the component unmounts thats why we have to unsubscribe from it below
+//     //in the componentWillUnmount
+//     // this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
+//     //   //  this.setState({ currentUser: user });
       
-    //   if (userAuth){//if logging in 
-    //     const userRef = await createUserProfileDocument(userAuth);
+//     //   if (userAuth){//if logging in 
+//     //     const userRef = await createUserProfileDocument(userAuth);
 
-    //     //if (userRef){
-    //       userRef.onSnapshot(snapShot => {
-    //         console.log(snapShot.data());//important you must add the .data() method to see the newly created user Data
+//     //     //if (userRef){
+//     //       userRef.onSnapshot(snapShot => {
+//     //         console.log(snapShot.data());//important you must add the .data() method to see the newly created user Data
           
-    //         //replaced by the redux functions below
-    //         // this.setState({
-    //         //   currentUser: {
-    //         //     id: snapShot.id,
-    //         //     ...snapShot.data()
-    //         //   }
-    //         // }, () => {
-    //         //   console.log(this.state);//setState is async that is why we assing it as a callback
-    //         // });
-    //       //******************** */
-    //         // this.props.setCurrentUser({
-    //         //     id: snapShot.id,
-    //         //     ...snapShot.data()
+//     //         //replaced by the redux functions below
+//     //         // this.setState({
+//     //         //   currentUser: {
+//     //         //     id: snapShot.id,
+//     //         //     ...snapShot.data()
+//     //         //   }
+//     //         // }, () => {
+//     //         //   console.log(this.state);//setState is async that is why we assing it as a callback
+//     //         // });
+//     //       //******************** */
+//     //         // this.props.setCurrentUser({
+//     //         //     id: snapShot.id,
+//     //         //     ...snapShot.data()
               
-    //         // }, () => {
-    //         //   console.log(this.state);//setState is async that is why we assing it as a callback
-    //         // });
-    //       //********************** */  
-    //         setCurrentUser({
-    //           //when ever the user snapshot updates we are settign the userReducer value with the new obj.
-    //             id: snapShot.id,
-    //             ...snapShot.data()
+//     //         // }, () => {
+//     //         //   console.log(this.state);//setState is async that is why we assing it as a callback
+//     //         // });
+//     //       //********************** */  
+//     //         setCurrentUser({
+//     //           //when ever the user snapshot updates we are settign the userReducer value with the new obj.
+//     //             id: snapShot.id,
+//     //             ...snapShot.data()
               
-    //         }, () => {
-    //           console.log(this.state);//setState is async that is why we assing it as a callback
-    //         });
+//     //         }, () => {
+//     //           console.log(this.state);//setState is async that is why we assing it as a callback
+//     //         });
 
-    //       });
-    //     //}
+//     //       });
+//     //     //}
 
-    //   } else {//if logged out then userAuth will be null so we are setting currentUser to null
-    //     // this.setState({ currentUser: userAuth });
-    //     setCurrentUser( userAuth );
+//     //   } else {//if logged out then userAuth will be null so we are setting currentUser to null
+//     //     // this.setState({ currentUser: userAuth });
+//     //     setCurrentUser( userAuth );
         
-    //     //if you look at the SHOP_DATA it holds routeName, and id that we dont want in firebase
-    //     //we only need the title and items that we must desctructure by looping over the data
-    //     //*********IT DID NOT WORK 100% THE FIRST RECORD'S UNWANTED DATA ENDED UP IN FIREBASE */
-    //     // addCollectionAndDocuments('collections', collectionsArray.map(({ title, items }) => ({ title, items })));
-    //   }  
-    //   // console.log(userAuth);
-    // })
+//     //     //if you look at the SHOP_DATA it holds routeName, and id that we dont want in firebase
+//     //     //we only need the title and items that we must desctructure by looping over the data
+//     //     //*********IT DID NOT WORK 100% THE FIRST RECORD'S UNWANTED DATA ENDED UP IN FIREBASE */
+//     //     // addCollectionAndDocuments('collections', collectionsArray.map(({ title, items }) => ({ title, items })));
+//     //   }  
+//     //   // console.log(userAuth);
+//     // })
 
-    //lec. 183 - restoring persistence
-    const { checkUserSession } = this.props;
+//     //lec. 183 - restoring persistence
+//     const { checkUserSession } = this.props;
+//     checkUserSession();
+//   }
+
+//   componentWillUnmount(){
+//     this.unsubscribeFromAuth();//when the user logs out this will close the subscription
+//   }
+
+//   render(){
+//     return (
+//       <div className="App">
+// {      //making the header aware that the user has logged out /or in to display sign in or log out links 
+// }      
+//         {/* <Header currentUser={ this.state.currentUser }/> */}
+//         <Header/>
+//         {//https://reacttraining.com/react-router/web/guides/quick-start}
+        
+//           /* 
+//           exact is either true or false, exact={true}, exact={false} , can write it this way also
+//           if we just write exact it's true, if we dont write exact it's false
+//           if we dont write exact and the url is localhost:3000/hast then home page will render and hats below it
+//           */
+        
+//         /* <Route exact path='/' component={HomePage}/>
+//         <Route path='/hats' component={HatsPage}/> */
+  
+//         <Switch>
+//           <Route exact path='/' component={HomePage}/>
+//           <Route path='/shop' component={ShopPage}/>
+//           <Route exact path='/checkout' component={CheckoutPage}/>
+//           {/* <Route path='/signin' component={SignInAndSignUpPage}/> */}
+//           {/* //redirect to homepage if logged in and trying to access login page */}
+//           <Route exact path='/signin' render={() => this.props.currentUser ? (<Redirect to='/'/>) : (<SignInAndSignUpPage/>)}/>
+
+//         </Switch>
+  
+//         /* <Router>
+//           <div>
+//           <nav>
+//             <ul>
+//               <li>
+//                 <Link to="/hats">Hats</Link>
+//               </li>
+//             </ul>
+//           </nav>
+//             <HomePage/>
+//               <Switch>
+//                 <Route path="/hats">
+//                   <HatsPage />
+//                 </Route>
+//               </Switch>
+//           </div>
+//     </Router> */}
+//       </div>
+//     );    
+//   }
+  
+// }
+//{ user } - destructuring the userReducer 
+// const mapStateToProps = ({ user }) => ({
+//   currentUser: user.currentUser
+// });
+
+const App = ({ checkUserSession, currentUser }) => {
+
+  useEffect(() => {
     checkUserSession();
-  }
+  }, [checkUserSession]);//lec. 192, to prevent checkusersession from firing when ever we log in - confusing
 
-  componentWillUnmount(){
-    this.unsubscribeFromAuth();//when the user logs out this will close the subscription
-  }
-
-  render(){
     return (
       <div className="App">
-{      //making the header aware that the user has logged out /or in to display sign in or log out links 
-}      
-        {/* <Header currentUser={ this.state.currentUser }/> */}
+
         <Header/>
-        {//https://reacttraining.com/react-router/web/guides/quick-start}
-        
-          /* 
-          exact is either true or false, exact={true}, exact={false} , can write it this way also
-          if we just write exact it's true, if we dont write exact it's false
-          if we dont write exact and the url is localhost:3000/hast then home page will render and hats below it
-          */
-        
-        /* <Route exact path='/' component={HomePage}/>
-        <Route path='/hats' component={HatsPage}/> */
   
         <Switch>
           <Route exact path='/' component={HomePage}/>
           <Route path='/shop' component={ShopPage}/>
           <Route exact path='/checkout' component={CheckoutPage}/>
-          {/* <Route path='/signin' component={SignInAndSignUpPage}/> */}
-          {/* //redirect to homepage if logged in and trying to access login page */}
-          <Route exact path='/signin' render={() => this.props.currentUser ? (<Redirect to='/'/>) : (<SignInAndSignUpPage/>)}/>
+          <Route exact path='/signin' render={() => currentUser ? (<Redirect to='/'/>) : (<SignInAndSignUpPage/>)}/>
 
         </Switch>
-  
-        /* <Router>
-          <div>
-          <nav>
-            <ul>
-              <li>
-                <Link to="/hats">Hats</Link>
-              </li>
-            </ul>
-          </nav>
-            <HomePage/>
-              <Switch>
-                <Route path="/hats">
-                  <HatsPage />
-                </Route>
-              </Switch>
-          </div>
-    </Router> */}
+
       </div>
-    );    
-  }
+    );   
   
 }
-//{ user } - destructuring the userReducer 
-// const mapStateToProps = ({ user }) => ({
-//   currentUser: user.currentUser
-// });
 
 //doing the above differently
 const mapStateToProps = createStructuredSelector({

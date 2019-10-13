@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Route } from 'react-router-dom';
 import { connect } from 'react-redux';
 // import { createStructuredSelector } from 'reselect';
@@ -67,103 +67,118 @@ import { fetchCollectionsStart } from '../../redux/shop/shop.actions';
 // const CollectionPagewWithSpinner = WithSpinner(CollectionPage);//collectionOverview and collectionPage below need to be aware whether the data is loading
 
 
-class ShopPage extends React.Component {
-    //*********MOST OF THE CODE WAS MOVED SHOP.ACTIONS.JS */
-    // constructor(){
-    //     super();
-    //because the data coming in from firebase is asynchronous (we changed it to async by switching to promises) we might get errors to prevent this
-    //we create a loading state that displays a loading icon until we receive the data.
-    //     this.state ={ loading: true }
-    // }
+// class ShopPage extends React.Component {
+//     //*********MOST OF THE CODE WAS MOVED SHOP.ACTIONS.JS */
+//     // constructor(){
+//     //     super();
+//     //because the data coming in from firebase is asynchronous (we changed it to async by switching to promises) we might get errors to prevent this
+//     //we create a loading state that displays a loading icon until we receive the data.
+//     //     this.state ={ loading: true }
+//     // }
 
-    //if we write the state obj. outside the constructor react will automatically write a constructor and invoke super for us. 
-    //like the constructor commented out above
-    // state ={ loading: true }
+//     //if we write the state obj. outside the constructor react will automatically write a constructor and invoke super for us. 
+//     //like the constructor commented out above
+//     // state ={ loading: true }
 
-    //when ever subscribing (getting) firebase data we also need to unsubscribe
-    // unsuscribeFromSnapshot = null;
+//     //when ever subscribing (getting) firebase data we also need to unsubscribe
+//     // unsuscribeFromSnapshot = null;
 
-    componentDidMount(){
+//     componentDidMount(){
 
-        // const { updateCollections } = this.props;
+//         // const { updateCollections } = this.props;
 
-        // const { fetchCollectionsStartAsync } = this.props;
-        // fetchCollectionsStartAsync();
+//         // const { fetchCollectionsStartAsync } = this.props;
+//         // fetchCollectionsStartAsync();
         
-        const { fetchCollectionsStart } = this.props;
-        fetchCollectionsStart();
+//         const { fetchCollectionsStart } = this.props;
+//         fetchCollectionsStart();
         
-        //this is slightly diffenent to user authentication because we are only getting data
-        //WE DONT NEED THIS WE CAN ALSO USE THE FETCH API LIKE SHOWN BELOW lec. 166
-        // const collectionRef = firestore.collection('collections');//('collections'); - name of obj. holding the items data
-        // // fetch('https://<FIRBASE API END POINT>/collections').then(res => res.json()).then(collections => console.log(collections));
+//         //this is slightly diffenent to user authentication because we are only getting data
+//         //WE DONT NEED THIS WE CAN ALSO USE THE FETCH API LIKE SHOWN BELOW lec. 166
+//         // const collectionRef = firestore.collection('collections');//('collections'); - name of obj. holding the items data
+//         // // fetch('https://<FIRBASE API END POINT>/collections').then(res => res.json()).then(collections => console.log(collections));
         
-        // //whenever the collectionRef updates or whenever this code runs for the first time
-        // //this code will send us the collections json data
+//         // //whenever the collectionRef updates or whenever this code runs for the first time
+//         // //this code will send us the collections json data
 
-        // //******IMPORTANT */If we are using PROMISES and not Observable Observer Pattern then
-        // collectionRef.get().then(snapshot => {
-        //     //console.log(snapshot);
-        //     //now though the routing and ids were removed from the db data we need to get them back into our App
-        //     //so
-        //     const collectionsMap = convertCollectionsSnapshotToMap(snapshot);
-        //     // console.log(collectionsMap);
-        //     updateCollections(collectionsMap); 
-        //     //we can move the state below into a redux state 
-        //     //or we can move the entire collectionRef.get().then(snapshot => { into a REDUX state  
-        //     //for this we'll be using REDUX THUNK for asynchronous REDUX
-        //     this.setState({ loading: false });//data has finished loading stop rendering the loading icon          
-        // })
+//         // //******IMPORTANT */If we are using PROMISES and not Observable Observer Pattern then
+//         // collectionRef.get().then(snapshot => {
+//         //     //console.log(snapshot);
+//         //     //now though the routing and ids were removed from the db data we need to get them back into our App
+//         //     //so
+//         //     const collectionsMap = convertCollectionsSnapshotToMap(snapshot);
+//         //     // console.log(collectionsMap);
+//         //     updateCollections(collectionsMap); 
+//         //     //we can move the state below into a redux state 
+//         //     //or we can move the entire collectionRef.get().then(snapshot => { into a REDUX state  
+//         //     //for this we'll be using REDUX THUNK for asynchronous REDUX
+//         //     this.setState({ loading: false });//data has finished loading stop rendering the loading icon          
+//         // })
 
-        //OBERVABLE OBSERVER PATTERN
-        // collectionRef.onSnapshot(async snapshot => {
-        //     //console.log(snapshot);
-        //     //now though the routing and ids were removed from the db data we need to get them back into our App
-        //     //so
-        //     const collectionsMap = convertCollectionsSnapshotToMap(snapshot);
-        //     // console.log(collectionsMap);
-        //     updateCollections(collectionsMap);  
-        //     this.setState({ loading: false });//data has finished loading stop rendering the loading icon          
-        // });
-    }
+//         //OBERVABLE OBSERVER PATTERN
+//         // collectionRef.onSnapshot(async snapshot => {
+//         //     //console.log(snapshot);
+//         //     //now though the routing and ids were removed from the db data we need to get them back into our App
+//         //     //so
+//         //     const collectionsMap = convertCollectionsSnapshotToMap(snapshot);
+//         //     // console.log(collectionsMap);
+//         //     updateCollections(collectionsMap);  
+//         //     this.setState({ loading: false });//data has finished loading stop rendering the loading icon          
+//         // });
+//     }
 
-    render(){
+//     render(){
 
-        // const { match, isCollectionFetching, isCollectionsLoaded } = this.props;
-        const { match } = this.props;
+//         // const { match, isCollectionFetching, isCollectionsLoaded } = this.props;
+//         const { match } = this.props;
 
-        // const { loading } = this.state;
-        return (<div className='shop-page'>
-            {
-                //in the App.js page the ShopPage is nested in a Route and that automatically passes
-                //match, history, path to the ShopPage component props, I think we use withRouter when 
-                //a Route component does not pass match, history and path into it 
-                //in App.js - <Route path='/shop' component={ShopPage}/> will always lead us to the ShopPage component
-            }
-            {/* <Route exact path={`${match.path}`} component={ CollectionOverview } /> */}
-            {
-                //render is a function where the params of the function are the props that the component receive
-                //below props are match location and history that the <Route/> passes into the component
-            }   
-                {/* <Route exact path={`${match.path}`} render={(props) => <CollectionOverviewWithSpinner isLoading={loading} {...props}/>} /> */}
-                {/* <Route path={`${match.path}/:collectionId`} component={ CollectionPage }/> */}
-                {/* <Route path={`${match.path}/:collectionId`} render={(props) => <CollectionPagewWithSpinner isLoading={loading} {...props}/>} /> */}
+//         // const { loading } = this.state;
+//         return (<div className='shop-page'>
+//             {
+//                 //in the App.js page the ShopPage is nested in a Route and that automatically passes
+//                 //match, history, path to the ShopPage component props, I think we use withRouter when 
+//                 //a Route component does not pass match, history and path into it 
+//                 //in App.js - <Route path='/shop' component={ShopPage}/> will always lead us to the ShopPage component
+//             }
+//             {/* <Route exact path={`${match.path}`} component={ CollectionOverview } /> */}
+//             {
+//                 //render is a function where the params of the function are the props that the component receive
+//                 //below props are match location and history that the <Route/> passes into the component
+//             }   
+//                 {/* <Route exact path={`${match.path}`} render={(props) => <CollectionOverviewWithSpinner isLoading={loading} {...props}/>} /> */}
+//                 {/* <Route path={`${match.path}/:collectionId`} component={ CollectionPage }/> */}
+//                 {/* <Route path={`${match.path}/:collectionId`} render={(props) => <CollectionPagewWithSpinner isLoading={loading} {...props}/>} /> */}
 
-                {
-                    //Now we are moving isCollectionFetching and isCollectionsLoaded into CollectionOverviewWithSpinner, CollectionPagewWithSpinner
-                    //because we need them to be in their own isolated environment (THE CONTAINER PATTERN) lec. 170
-                }
-                {/* <Route exact path={`${match.path}`} render={(props) => <CollectionOverviewWithSpinner isLoading={isCollectionFetching} {...props}/>} />
-                <Route path={`${match.path}/:collectionId`} render={(props) => <CollectionPagewWithSpinner isLoading={!isCollectionsLoaded} {...props}/>} /> */}
+//                 {
+//                     //Now we are moving isCollectionFetching and isCollectionsLoaded into CollectionOverviewWithSpinner, CollectionPagewWithSpinner
+//                     //because we need them to be in their own isolated environment (THE CONTAINER PATTERN) lec. 170
+//                 }
+//                 {/* <Route exact path={`${match.path}`} render={(props) => <CollectionOverviewWithSpinner isLoading={isCollectionFetching} {...props}/>} />
+//                 <Route path={`${match.path}/:collectionId`} render={(props) => <CollectionPagewWithSpinner isLoading={!isCollectionsLoaded} {...props}/>} /> */}
             
-                <Route exact path={`${match.path}`} component={CollectionOverviewContainer} />
-                <Route path={`${match.path}/:collectionId`} component={CollectionPageContainer} />
+//                 <Route exact path={`${match.path}`} component={CollectionOverviewContainer} />
+//                 <Route path={`${match.path}/:collectionId`} component={CollectionPageContainer} />
 
-            </div>)
-        }        
+//             </div>)
+//         }        
+
+// }
+
+const ShopPage = ({ match, fetchCollectionsStart }) => {
+    //use effect will be called only if the props change and only if the APp component rerenders the ShopPage
+    useEffect(() => {
+        fetchCollectionsStart();
+    }, [fetchCollectionsStart])//what was described above was heppening because in App.js -   useEffect(() => {checkUserSession();}, [checkUserSession]);
+    //we can also pass in a empty array above but that will give us a warning lec. 192
+
+    return (
+        <div className='shop-page'>
+        <Route exact path={`${match.path}`} component={CollectionOverviewContainer} />
+        <Route path={`${match.path}/:collectionId`} component={CollectionPageContainer} />
+        </div>
+    )       
 
 }
-
 //may be functions from .selectors.js go into mapStateTOProps
 //and from .actions.js go to mapDIspatchToProps
 

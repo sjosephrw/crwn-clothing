@@ -3,7 +3,7 @@ import { connect } from 'react-redux';//connect - Higher Order Component, that m
 import './header.styles.scss';
 import { ReactComponent as Logo } from '../../assets/crown.svg'
 import {  Link  } from "react-router-dom";
-import { auth, Logout } from '../../firebase/firebase.utils';
+// import { auth, Logout } from '../../firebase/firebase.utils';
 import CartIcon from '../cart-icon/cart-icon.component';
 import CartDropdown from '../cart-dropdown/cart-dropdown.component';
 import { createStructuredSelector } from 'reselect';
@@ -12,7 +12,7 @@ import { selectCurrentUser } from '../../redux/user/user.selectors';
 import { signOutStart } from '../../redux/user/user.actions';
 
 import { selectCartHidden } from '../../redux/cart/cart.selectors';
-import { HeaderContainer, LogoContainer, OptionsContainer, OptionLink, OptionDiv } from './header.styles';
+// import { HeaderContainer, LogoContainer, OptionsContainer, OptionLink, OptionDiv } from './header.styles';
 //hence forth we want the current user value to be received from the userReducer
 
 // const Header = ({ hidden, currentUser }) => (

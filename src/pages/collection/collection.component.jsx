@@ -6,9 +6,20 @@ import CollectionItem from '../../components/collection-item/collection-item.com
 import { selectCollection } from '../../redux/shop/shop.selectors';
 
 import './collection.styles.scss';
+// import { firestore } from 'firebase';
 
 const CollectionPage = ({ match, collection }) => {
-   
+   //if using useEffect to return a function , then it will be have as a clean up function (so we can use it as componentWillUnmount())
+   //lec. 193
+//    useEffect(() => {
+//         console.log('I am Subscribing.');
+//         const unsubscribeFromCollections = firestore.collection('collections').onSnapshot(snapshot => console.log(snapshot));
+//         return () => {
+//             console.log('I am Unsubscribing.');
+//             unsubscribeFromCollections();
+//         };
+//     }, []);
+
 //    console.log(match);
 //    console.log(match.params.collectionId);
  console.log(`D ${collection}`)

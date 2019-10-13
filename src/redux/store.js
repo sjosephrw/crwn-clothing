@@ -6,7 +6,7 @@ import { persistStore } from 'redux-persist';//to store the state in local stora
 // import thunk from 'redux-thunk';//to handle asynchronous redux, not used because of redux saga
 import createSagaMiddleware from 'redux-saga';//to handle async req. much better than thunks
 import rootSaga from './root-saga';
-import { fetchCollectionsStart } from './shop/shop.sagas';
+// import { fetchCollectionsStart } from './shop/shop.sagas';
 
 //the MW that the store is expecting from redux is a array, if we need to add more things to the MW then add it to the array below
 //we could have done it without a array but we might need to passs in several MW's in the future
