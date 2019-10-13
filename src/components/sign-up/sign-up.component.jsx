@@ -1,9 +1,12 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
 import FormInput from '../form-input/form-input.component';
 import CustomButton from '../custom-button/custom-button.component';
 
-import { auth, createUserProfileDocument } from '../../firebase/firebase.utils';
+// import { auth, createUserProfileDocument } from '../../firebase/firebase.utils';
+
+import { signUpStart } from '../../redux/user/user.actions';
 
 import './sign-up.styles.scss';
 
@@ -23,29 +26,32 @@ class SignUp extends React.Component {
     event.preventDefault();
 
     const { displayName, email, password, confirmPassword } = this.state;
+    const { signUpStart } = this.props;
 
     if (password !== confirmPassword) {
       alert("passwords don't match");
       return;
     }
 
-    try {
-      const { user } = await auth.createUserWithEmailAndPassword(
-        email,
-        password
-      );
+    signUpStart({ displayName, email, password });
 
-      await createUserProfileDocument(user, { displayName });
+    // try {
+    //   const { user } = await auth.createUserWithEmailAndPassword(
+    //     email,
+    //     password
+    //   );
 
-      this.setState({
-        displayName: '',
-        email: '',
-        password: '',
-        confirmPassword: ''
-      });
-    } catch (error) {
-      console.log(error);
-    }
+    //   await createUserProfileDocument(user, { displayName });
+
+    //   this.setState({
+    //     displayName: '',
+    //     email: '',
+    //     password: '',
+    //     confirmPassword: ''
+    //   });
+    // } catch (error) {
+    //   console.log(error);
+    // }
 
     console.log('Submit')
   };
@@ -58,7 +64,9 @@ class SignUp extends React.Component {
   };
 
   render() {
+    
     const { displayName, email, password, confirmPassword } = this.state;
+
     return (
       <div className='sign-up'>
         <h2 className='title'>I do not have a account</h2>
@@ -103,4 +111,8 @@ class SignUp extends React.Component {
   }
 }
 
-export default SignUp;
+const mapDispatchToPrpos = (dispatch) => ({
+  signUpStart: (userCredentials) => dispatch(signUpStart(userCredentials))
+})
+
+export default connect(null, mapDispatchToPrpos)(SignUp);

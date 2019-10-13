@@ -23,3 +23,8 @@ export const clearItemFromCart = (item) => ({
     type: CartActionTypes.CLEAR_ITEM_FROM_CART,
     payload: item//optional but we need it in the userReducer so it was passed in here.    
 })
+
+//empty the cart
+export const clearCart = () => ({
+    type: CartActionTypes.CLEAR_CART
+})

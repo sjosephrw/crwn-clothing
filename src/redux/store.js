@@ -5,7 +5,7 @@ import rootReducer from './root-reducer';
 import { persistStore } from 'redux-persist';//to store the state in local storage, //other wise when we refresh the browser the cart data disappears
 // import thunk from 'redux-thunk';//to handle asynchronous redux, not used because of redux saga
 import createSagaMiddleware from 'redux-saga';//to handle async req. much better than thunks
-
+import rootSaga from './root-saga';
 import { fetchCollectionsStart } from './shop/shop.sagas';
 
 //the MW that the store is expecting from redux is a array, if we need to add more things to the MW then add it to the array below
@@ -25,7 +25,7 @@ if (process.env.NODE_ENV === 'development'){
 export const store = createStore(rootReducer, applyMiddleware(...middlewares));
 
 //the individual sagas we write will be written below applyMiddleware
-sagaMiddleware.run(fetchCollectionsStart);//we pass the individual MWS in here
+sagaMiddleware.run(rootSaga);//we pass the individual MWS in here
 
 export const persistor = persistStore(store);
 

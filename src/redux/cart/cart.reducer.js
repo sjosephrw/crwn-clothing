@@ -39,7 +39,12 @@ const cartReducer = (state = INITIAL_STATE, action) => {
                 // cartItems: state.cartItems.push(action.payload)
                 //filter returns a new array without the item to be deleted
                 cartItems: removeItemFromCart(state.cartItems, action.payload)//spread in the existing cartItems and remove the newItem
-            }                                             
+            } 
+        case CartActionTypes.CLEAR_CART:
+            return {
+                ...state,
+                cartItems: []
+            }                                            
         default:
             return state;//return initial state
     }

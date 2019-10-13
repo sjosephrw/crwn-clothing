@@ -1,9 +1,12 @@
 import React from 'react';
+import { connect } from 'react-redux';
 import './sign-in.styles.scss';
 import FormInput from '../form-input/form-input.component';
 import CustomButton from '../custom-button/custom-button.component';
-import { signInWithGoogle } from '../../firebase/firebase.utils';
-import { auth, createUserProfileDocument } from '../../firebase/firebase.utils';
+// import { signInWithGoogle } from '../../firebase/firebase.utils';
+import { googleSignInStart, emailSignInStart } from '../../redux/user/user.actions';
+
+// import { auth /*, createUserProfileDocument*/ } from '../../firebase/firebase.utils';
 
 class SignIn extends React.Component {
 
@@ -18,22 +21,26 @@ class SignIn extends React.Component {
         event.preventDefault();
     
         const { email, password } = this.state;
-    
-        try {
-            //signInWithEmailAndPassword built in to fire base
-          await auth.signInWithEmailAndPassword(
-            email,
-            password
-          );
+        
+        const { emailSignInStart } = this.props;
+        
+        emailSignInStart(email, password);
+
+        // try {
+        //     //signInWithEmailAndPassword built in to fire base
+        //   await auth.signInWithEmailAndPassword(
+        //     email,
+        //     password
+        //   );
             
 
-          this.setState({//clear the form fields
-            email: '',
-            password: ''
-          });
-        } catch (error) {
-          console.log(error);
-        }
+        //   this.setState({//clear the form fields
+        //     email: '',
+        //     password: ''
+        //   });
+        // } catch (error) {
+        //   console.log(error);
+        // }
     
         console.log('Submit')
       };
@@ -46,6 +53,9 @@ class SignIn extends React.Component {
       };
 
     render(){
+
+       const { googleSignInStart } = this.props;
+
        return (
         <div className='sign-in'>
             <h2>I already have an account.</h2>
@@ -57,7 +67,8 @@ class SignIn extends React.Component {
                 type='submit'
                 >Sign In</CustomButton>
                 <CustomButton 
-                onClick={signInWithGoogle}
+                type='button'//if we dont put this the button will submit the login form instead of triggering the popup
+                onClick={googleSignInStart}
                 isGoogleSignIn
                 >Sign In with Google</CustomButton>
             </form>
@@ -67,4 +78,9 @@ class SignIn extends React.Component {
 
 }
 
-export default SignIn;
+const mapDispatchToPrpos = (dispatch) => ({
+  googleSignInStart: () => dispatch(googleSignInStart()),
+  emailSignInStart: (email, password) => dispatch(emailSignInStart({ email, password }))
+})
+
+export default connect(null, mapDispatchToPrpos)(SignIn);

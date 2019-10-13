@@ -136,17 +136,44 @@ export const convertCollectionsSnapshotToMap = collections => {
   );
 };
 
+//we write a promise to check whether the user is logged in, becuase this code is used in the user saga and sagas use promises
+export const getCurrentUser = () => {
+  return new Promise((resolve, reject) => {
+    const unsubscribe = auth.onAuthStateChanged(userAuth => {
+      unsubscribe();//must be to run this function in here, he didn't explain
+      resolve(userAuth);
+    }, reject)//onAuthStateChanged secondary function is handles the error so we just pass back the reject parameter there
+  })
+}
+
 export const auth = firebase.auth();
+
+export const Logout = () => firebase.auth().signOut().then(function() {
+  console.log('Signed Out');
+}, function(error) {
+  console.error('Sign Out Error', error);
+});
 
 export const firestore = firebase.firestore();
 
-var provider = new firebase.auth.GoogleAuthProvider();
+//now we are exporting out the provider into the user.sagas.js file
+// const provider = new firebase.auth.GoogleAuthProvider();
 
-provider.setCustomParameters({
+// provider.setCustomParameters({
+//     prompt: 'select_account'//trigger the pop up when a account is selected.
+//   });
+
+export const googleProvider = new firebase.auth.GoogleAuthProvider();
+
+googleProvider.setCustomParameters({
     prompt: 'select_account'//trigger the pop up when a account is selected.
-  });
+});
 
-export const signInWithGoogle = () => auth.signInWithPopup(provider);
+//export const signInWithGoogle = () => auth.signInWithPopup(googleProvider);
+
+
+
+
 // .then(function(result) {
 //     // This gives you a Google Access Token. You can use it to access the Google API.
 //     var token = result.credential.accessToken;

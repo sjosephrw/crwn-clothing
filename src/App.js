@@ -12,8 +12,8 @@ import SignInAndSignUpPage from './pages/sign-in-and-sign-up/sign-in-and-sign-up
 import CheckoutPage from './pages/checkout/checkout.component';
 
 
-import { auth, createUserProfileDocument, addCollectionAndDocuments } from './firebase/firebase.utils';
-import { setCurrentUser } from './redux/user/user.actions';
+// import { auth, createUserProfileDocument, addCollectionAndDocuments } from './firebase/firebase.utils';
+import { checkUserSession } from './redux/user/user.actions';
 import { selectCurrentUser } from './redux/user/user.selectors';
 
 import { selectCollectionsForPreview } from './redux/shop/shop.selectors';
@@ -33,62 +33,64 @@ class App extends React.Component {
 
   componentDidMount(){
 
-    const { setCurrentUser/*, collectionsArray*/ } = this.props; 
+    // const { setCurrentUser/*, collectionsArray*/ } = this.props; 
     //onAuthStateChanged is a event listener that we do not need when the component unmounts thats why we have to unsubscribe from it below
     //in the componentWillUnmount
-    this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
-      //  this.setState({ currentUser: user });
+    // this.unsubscribeFromAuth = auth.onAuthStateChanged(async userAuth => {
+    //   //  this.setState({ currentUser: user });
       
-      if (userAuth){//if logging in 
-        const userRef = await createUserProfileDocument(userAuth);
+    //   if (userAuth){//if logging in 
+    //     const userRef = await createUserProfileDocument(userAuth);
 
-        //if (userRef){
-          userRef.onSnapshot(snapShot => {
-            console.log(snapShot.data());//important you must add the .data() method to see the newly created user Data
+    //     //if (userRef){
+    //       userRef.onSnapshot(snapShot => {
+    //         console.log(snapShot.data());//important you must add the .data() method to see the newly created user Data
           
-            //replaced by the redux functions below
-            // this.setState({
-            //   currentUser: {
-            //     id: snapShot.id,
-            //     ...snapShot.data()
-            //   }
-            // }, () => {
-            //   console.log(this.state);//setState is async that is why we assing it as a callback
-            // });
-          //******************** */
-            // this.props.setCurrentUser({
-            //     id: snapShot.id,
-            //     ...snapShot.data()
+    //         //replaced by the redux functions below
+    //         // this.setState({
+    //         //   currentUser: {
+    //         //     id: snapShot.id,
+    //         //     ...snapShot.data()
+    //         //   }
+    //         // }, () => {
+    //         //   console.log(this.state);//setState is async that is why we assing it as a callback
+    //         // });
+    //       //******************** */
+    //         // this.props.setCurrentUser({
+    //         //     id: snapShot.id,
+    //         //     ...snapShot.data()
               
-            // }, () => {
-            //   console.log(this.state);//setState is async that is why we assing it as a callback
-            // });
-          //********************** */  
-            setCurrentUser({
-              //when ever the user snapshot updates we are settign the userReducer value with the new obj.
-                id: snapShot.id,
-                ...snapShot.data()
+    //         // }, () => {
+    //         //   console.log(this.state);//setState is async that is why we assing it as a callback
+    //         // });
+    //       //********************** */  
+    //         setCurrentUser({
+    //           //when ever the user snapshot updates we are settign the userReducer value with the new obj.
+    //             id: snapShot.id,
+    //             ...snapShot.data()
               
-            }, () => {
-              console.log(this.state);//setState is async that is why we assing it as a callback
-            });
+    //         }, () => {
+    //           console.log(this.state);//setState is async that is why we assing it as a callback
+    //         });
 
-          });
-        //}
+    //       });
+    //     //}
 
-      } else {//if logged out then userAuth will be null so we are setting currentUser to null
-        // this.setState({ currentUser: userAuth });
-        setCurrentUser( userAuth );
+    //   } else {//if logged out then userAuth will be null so we are setting currentUser to null
+    //     // this.setState({ currentUser: userAuth });
+    //     setCurrentUser( userAuth );
         
-        //if you look at the SHOP_DATA it holds routeName, and id that we dont want in firebase
-        //we only need the title and items that we must desctructure by looping over the data
-        //*********IT DID NOT WORK 100% THE FIRST RECORD'S UNWANTED DATA ENDED UP IN FIREBASE */
-        // addCollectionAndDocuments('collections', collectionsArray.map(({ title, items }) => ({ title, items })));
-      }  
-      // console.log(userAuth);
-    })
+    //     //if you look at the SHOP_DATA it holds routeName, and id that we dont want in firebase
+    //     //we only need the title and items that we must desctructure by looping over the data
+    //     //*********IT DID NOT WORK 100% THE FIRST RECORD'S UNWANTED DATA ENDED UP IN FIREBASE */
+    //     // addCollectionAndDocuments('collections', collectionsArray.map(({ title, items }) => ({ title, items })));
+    //   }  
+    //   // console.log(userAuth);
+    // })
 
-
+    //lec. 183 - restoring persistence
+    const { checkUserSession } = this.props;
+    checkUserSession();
   }
 
   componentWillUnmount(){
@@ -157,10 +159,14 @@ const mapStateToProps = createStructuredSelector({
 });
 
 //***********LEC 101 kind of confusing */
+// const mapDispatchToProps = dispatch => ({
+//   //setCurrentUser is passed in a  user obj. that calls dispatch() function - dispatch - a way for redux to know that whatever you are passing into me is a action obj. that I am going to pass into every reducer
+//   setCurrentUser: user => dispatch(setCurrentUser(user))//setCUrrentUse(user) - is the action obj. so we are dispatching the action obj.
+//   //so we dont nedd the app constructor any more.
+// });
+
 const mapDispatchToProps = dispatch => ({
-  //setCurrentUser is passed in a  user obj. that calls dispatch() function - dispatch - a way for redux to know that whatever you are passing into me is a action obj. that I am going to pass into every reducer
-  setCurrentUser: user => dispatch(setCurrentUser(user))//setCUrrentUse(user) - is the action obj. so we are dispatching the action obj.
-  //so we dont nedd the app constructor any more.
+  checkUserSession: () => dispatch(checkUserSession())
 });
 
 //***********LEC 101 kind of confusing */
